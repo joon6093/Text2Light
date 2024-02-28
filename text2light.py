@@ -68,7 +68,7 @@ def text2light(models: dict, prompts, outdir, params: dict):
 
     xsample_holistic = global_sampler.decode_to_img(idx, cshape)
     for i in range(xsample_holistic.shape[0]):
-        save_image(xsample_holistic[i], os.path.join(outdir, "holistic", "holistic_[{}].png".format(prompts[i])))
+        save_image(xsample_holistic[i], os.path.join(outdir, "holistic", "holistic_[{}].png".format(prompts[i][:10])))
 
     # synthesize patch by patch according to holistic condition
     h = 512
@@ -134,7 +134,7 @@ def text2light(models: dict, prompts, outdir, params: dict):
             idx[:,i,j] = ix.reshape(-1)
     xsample = local_sampler.decode_to_img(idx, cshape)
     for i in range(xsample.shape[0]):
-        save_image(xsample[i], os.path.join(outdir, "ldr", "ldr_[{}].png".format(prompts[i])))
+        save_image(xsample[i], os.path.join(outdir, "ldr", "ldr_[{}].png".format(prompts[i][:10])))
 
     # super-resolution inverse tone mapping
     if params['sritmo'] is not None:
@@ -144,8 +144,8 @@ def text2light(models: dict, prompts, outdir, params: dict):
         return
     
     for i in range(xsample.shape[0]):
-        cv2.imwrite(os.path.join(outdir, "ldr", "hrldr_[{}].png".format(prompts[i])), (ldr_hr_samples[i].permute(1, 2, 0).detach().cpu().numpy() + 1) * 127.5)
-        cv2.imwrite(os.path.join(outdir, "hdr", "hdr_[{}].exr".format(prompts[i])), hdr_hr_samples[i].permute(1, 2, 0).detach().cpu().numpy())
+        cv2.imwrite(os.path.join(outdir, "ldr", "hrldr_[{}].png".format(prompts[i][:10])), (ldr_hr_samples[i].permute(1, 2, 0).detach().cpu().numpy() + 1) * 127.5)
+        cv2.imwrite(os.path.join(outdir, "hdr", "hdr_[{}].exr".format(prompts[i][:10])), hdr_hr_samples[i].permute(1, 2, 0).detach().cpu().numpy())
 
 
 def get_parser():
